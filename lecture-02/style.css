@@ -1,0 +1,20 @@
+/* * {
+    background-color: peachpuff;
+} */
+
+body {
+    background-color: antiquewhite; 
+}
+
+h1 {
+    color: yellow;
+} 
+
+p {
+    color: white; 
+} 
+
+.mich-link {
+    text-decoration: none; 
+    color: royalblue; 
+}
