@@ -29,10 +29,9 @@ for(const id of getAllHoleIds()) {
             setTimeout(() => {
                 hole_id.classList.remove("animating-whack"); 
             }, 500); 
+            score++; 
+            document.querySelector("#score").innerText = "Score: " + score; 
         } 
-        score++; 
-        document.querySelector("#score").innerText = "Score: " + score; 
-
         if (score == 45) {
             clearInterval(interval); 
         }
