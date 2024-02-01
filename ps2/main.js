@@ -21,7 +21,10 @@ getRandomAnswer((answer) => {
 
 // TODO: Fill in your code here
 // Step 1: Define a function displayGuessFeedback(guess) that takes a guess and displays it on the page.
-// It should accept one argument (guess, a string) and will display feedback for that guess on the page.
+// It should accept one argument (guess, a string) and will display feedback for that guess on the page. 
+function displayGuessFeedback(guess) {
+    
+}
 // Steps:
 // 1. Create a new <div> element with class 'guess'
 // 2. For each letter in the guess, create a new <span> element with class 'letter'
