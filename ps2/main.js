@@ -23,8 +23,32 @@ getRandomAnswer((answer) => {
 // Step 1: Define a function displayGuessFeedback(guess) that takes a guess and displays it on the page.
 // It should accept one argument (guess, a string) and will display feedback for that guess on the page. 
 function displayGuessFeedback(guess) {
-    
-}
+    const guessesDiv = document.querySelector("#guesses"); 
+    const divElem = document.createElement("div"); 
+    divElem.classList.add("guess"); 
+    for (let i = 0; i < guess.length; i++) {
+        const letter = guess[i].toUpperCase();
+        const correctLetter = correctAnswer[i].toUpperCase(); 
+        const spanElem = document.createElement("span"); 
+        spanElem.classList.add("letter"); 
+        if (letter === correctLetter) {
+            spanElem.classList.add("correct"); 
+        } 
+        else if (correctAnswer.toUpperCase().includes(letter)) {
+            spanElem.classList.add("present"); 
+        } 
+        else {
+            spanElem.classList.add("absent"); 
+        } 
+        spanElem.innerText = letter; 
+        divElem.append(spanElem); 
+    } 
+    guessesDiv.append(divElem); 
+} 
+
+// displayGuessFeedback('hello'); 
+// displayGuessFeedback('world'); 
+
 // Steps:
 // 1. Create a new <div> element with class 'guess'
 // 2. For each letter in the guess, create a new <span> element with class 'letter'
@@ -49,6 +73,36 @@ function displayGuessFeedback(guess) {
 // 3. Append the guess's <div> element to the existing <div> with ID 'guesses'
 // 4. Try it out by calling displayGuessFeedback('hello') and displayGuessFeedback('world')
 // 
+
+inputEl.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+        const input = inputEl.value; 
+        if (input.length !== WORD_LENGTH) {
+            showInfoMessage(`Your guess must be ${WORD_LENGTH} letters long.`); 
+        }
+        else if (input === correctAnswer) {
+            displayGuessFeedback(input);
+            showInfoMessage(`You win! The answer was "${correctAnswer}".`); 
+            inputEl.setAttribute('disabled', true); 
+            inputEl.placeholder = input; 
+        } 
+        else {
+            isValidWord(input, (valid) => {
+                if (valid) { 
+                    displayGuessFeedback(input); 
+                } 
+                else {
+                    showInfoMessage(`${input} is not a valid word.`); 
+                } 
+            })
+        }
+        inputEl.value = ''; 
+    } 
+    else {
+        clearInfoMessage(); 
+    }
+})
+
 // Step 2: Add an event listener to the input element that listens for the 'keydown' event.
 // 1. When the user presses the 'Enter' key, the event listener should:
 //     1.a. Get the value of the input element (which is the guess)
