@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Box Example</title>
+        <style>
+            #box {
+                width: 250px;
+                height: 250px;
+            }
+            .red {
+                background-color: red;
+            }
+            .blue {
+                background-color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="box"></div>
+        <script>
+            const box = document.querySelector("#box"); 
+            // Exercise #2: add in a timer variable 
+            let timer; 
+            // let timerId = false; 
+            function toggleColor() {
+                if(box.classList.contains("red")) {
+                    box.classList.remove("red");
+                    box.classList.add("blue");
+                } else {
+                    box.classList.remove("blue");
+                    box.classList.add("red");
+                }
+                // Exercise #2: Provided is code that toggles a box between red and blue when the user clicks. Modify the code so that the box automatically toggles every three seconds if the user does not click on it. If the user clicks the box, it should toggle colors but also reset the 3-second timer Hint: use setTimeout (to call toggleColor again after 3s) and clearTimeout (to cancel any prior timeout) 
+                clearTimeout(timer); 
+                timer = setTimeout(toggleColor, 3000); 
+
+                // Exercise #2: another solution 
+                // clearTimeout(timerId); 
+                // timerId = setTimeout(() => { 
+                //     toggleColor(); 
+                //     console.log("Toggle because of timeout"); 
+                // }, 3000);
+            }
+            box.addEventListener("click", toggleColor)
+            toggleColor(); 
+        </script>
+    </body>
+</html>
+
