@@ -1,0 +1,17 @@
+{
+  "name": "lecture-15-npm",
+  "version": "1.0.0",
+  "description": "Practice of package managers",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "Tiffany",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "vite": "^5.1.6"
+  }
+}
