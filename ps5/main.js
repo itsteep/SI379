@@ -1,8 +1,11 @@
+// I used ChatGPT to help me with this Problem Set 
+
+import chroma from 'chroma-js'; 
 import { getBinomialProbability } from './utils.js';
 
 const BALL_COLOR = "#2F65A7";     // The color of the balls: [Arboretum Blue](https://brand.umich.edu/design-resources/colors/)
 
-const NUM_BALLS = 10;              // The number of balls to drop
+let NUM_BALLS = 10;              // The number of balls to drop
 const GRAPH_HEIGHT = 300;          // The maximum height of the graph (in pixels)
 const BALL_RADIUS = 10;            // The radius of the balls (in pixels)
 const PEG_RADIUS = 3;              // The radius of the pegs (in pixels)
@@ -11,7 +14,10 @@ const Y_MOVEMENT = 20;             // The vertical distance between pegs (in pix
 const DELAY_BETWEEN_BALLS = 1000;  // How long to wait between dropping balls (in milliseconds)
 const DELAY_BETWEEN_PEGS  = 1000;  // How long it takes for a ball to drop from one peg to the next (in milliseconds)
 const DELAY_WHEN_DROP     = 1000;  // How long it takes for the ball to "fall" into the hole (in milliseconds)
-const PROBABILITY_RIGHT = 0.5;     // The probability of a ball going right (as opposed to left)
+// const PROBABILITY_RIGHT = 0.5;     // The probability of a ball going right (as opposed to left)
+
+const rightwardProbabilityInput = document.querySelector('#rightward-probability'); 
+const numBallsInput = document.querySelector('#num-balls'); 
 
 const PADDING = Math.max(PEG_RADIUS, BALL_RADIUS, X_MOVEMENT/2) + 5; // The padding around the edge of the SVG element (in pixels)
 
@@ -27,7 +33,9 @@ const expectedBars = []; // An array of the expected number of balls that hit ea
 function drawBoard() {
     Array.from(svgElement.children).forEach(child => child.remove()); // Remove all the children of the SVG element
 
-    const NUM_LEVELS = parseInt(numLevelsInput.value); // How many levels of pegs to have
+    const NUM_LEVELS = parseInt(numLevelsInput.value); // How many levels of pegs to have 
+
+    const PROBABILITY_RIGHT = parseFloat(rightwardProbabilityInput.value);
 
     const TOTAL_WIDTH  = (NUM_LEVELS-1) * X_MOVEMENT + 2 * PADDING;                // The total width of the SVG element (in pixels)
     const TOTAL_HEIGHT = (NUM_LEVELS-1) * Y_MOVEMENT + 2 * PADDING + GRAPH_HEIGHT; // The total height of the SVG element (in pixels)
@@ -76,6 +84,34 @@ function drawBoard() {
         expectedBars.push(expectedBar);
     }
 
+    async function animateBall(circle, duration) {
+        const startY = parseFloat(circle.getAttribute('cy'));
+        const endY = startY + 20; // Move the ball downward by 20 pixels
+        const startTime = performance.now();
+    
+        return new Promise(resolve => {
+            function animate(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1); // Ensure progress doesn't exceed 1
+                const newY = startY + easeOutQuad(progress) * (endY - startY);
+                circle.setAttribute('cy', newY); // Update the position of the circle
+    
+                if (progress < 1) {
+                    requestAnimationFrame(animate); // Continue the animation
+                } else {
+                    resolve(); // Animation complete, resolve the promise
+                }
+            }
+    
+            requestAnimationFrame(animate); // Start the animation
+        });
+    }
+    
+    // Easing function for easing out
+    function easeOutQuad(t) {
+        return t * (2 - t);
+    }
+
     async function dropBall() {
         let row = 0; // Start at the top row
         let col = NUM_LEVELS - 1; // Start in the middle column
@@ -98,12 +134,17 @@ function drawBoard() {
             await moveCircleTo(circle, x, y, DELAY_BETWEEN_PEGS / parseFloat(speedInput.value)); // Move the ball to the new location
 
             const peg = pegs[row][col]; // The peg that the ball hit
-            hitCounts[row][col]++; // Increment the hit count for this peg
-            if(hitCounts[row][col] === 1) { // If this is the first time the peg was hit (i.e. the peg was not hit before this ball was dropped
-                peg.setAttribute('fill', '#DDD'); // Change the color of the peg to indicate that it was hit
-            } else {
-                peg.setAttribute('fill', '#AAA'); // Change the color of the peg to indicate that it was hit
-            }
+            hitCounts[row][col]++; // Increment the hit count for this peg 
+
+            const hitFrequency = hitCounts[row][col] / NUM_BALLS;
+            const colorScale = chroma.scale(['#ffffff', BALL_COLOR]).mode('lab'); // Start from white and transition to BALL_COLOR
+            const pegColor = colorScale(hitFrequency).hex();
+            peg.setAttribute('fill', pegColor);
+            // if(hitCounts[row][col] === 1) { // If this is the first time the peg was hit (i.e. the peg was not hit before this ball was dropped
+            //     peg.setAttribute('fill', '#DDD'); // Change the color of the peg to indicate that it was hit
+            // } else {
+            //     peg.setAttribute('fill', '#AAA'); // Change the color of the peg to indicate that it was hit
+            // }
         }
 
 
@@ -116,32 +157,32 @@ function drawBoard() {
     }
 
     // added new levels 
-    numLevelsInput.addEventListener('input', function() {
-        NUM_BALLS = parseInt(numLevelsInput.value);
-        redrawBoard();
-    }); 
+    // numLevelsInput.addEventListener('input', function() {
+    //     NUM_BALLS = parseInt(numLevelsInput.value);
+    //     redrawBoard();
+    // }); 
 
     // probability 
-    const rightwardProbabilityInput = document.querySelector('#rightward-probability'); 
 
-    rightwardProbabilityInput.value = PROBABILITY_RIGHT;
     rightwardProbabilityInput.min = 0;
     rightwardProbabilityInput.max = 1;
     rightwardProbabilityInput.step = 0.05;
 
-    rightwardProbabilityInput.addEventListener('input', function() {
-        PROBABILITY_RIGHT = parseFloat(rightwardProbabilityInput.value);
-        redrawBoard();
-    });
+    // rightwardProbabilityInput.addEventListener('input', function() {
+    //     PROBABILITY_RIGHT = parseFloat(rightwardProbabilityInput.value);
+    //     redrawBoard();
+    // });
 
     // end prob 
 
     async function dropBalls() {
+        console.log('Number of balls to drop:', NUM_BALLS); 
         redrawBoard(); // Redraw the board to clear the results
 
-        // Disable the inputs and button while the balls are dropping
+        // Disable the inputs and button while the balls are dropping 
         dropBallsButton.setAttribute('disabled', true);
         numLevelsInput.setAttribute('disabled', true); 
+        numBallsInput.setAttribute('disabled', true); 
         rightwardProbabilityInput.setAttribute('disabled', true); 
 
         const dropBallPromises = []; // An array of promises for each ball that is dropped
@@ -156,7 +197,8 @@ function drawBoard() {
         // Re-enable the inputs and button after the balls are done dropping
         dropBallsButton.removeAttribute('disabled');
         numLevelsInput.removeAttribute('disabled'); 
-        rightwardProbabilityInput.removeAttribute('disabled');
+        numBallsInput.removeAttribute('disabled'); 
+        // rightwardProbabilityInput.removeAttribute('disabled');
     }
 
     dropBallsButton.addEventListener('click', dropBalls); // When the button is clicked, drop the balls
@@ -178,6 +220,12 @@ function drawBoard() {
     return cleanup; // Return the cleanup function
 }
 
+// When the input field value changes, redraw the board
+numBallsInput.addEventListener('input', () => {
+    NUM_BALLS = parseInt(numBallsInput.value); // Update NUM_BALLS with the new value from the input field
+    redrawBoard();
+
+});
 
 // Animates the height of a rectangle from its current height to a new height
 async function changeHeightTo(rect, toHeight, duration) {
@@ -267,7 +315,7 @@ function createCircle(cx, cy, r, fill, stroke, parent) {
 
 // When we change any of the parameter inputs, redraw the board
 numLevelsInput.addEventListener('input', redrawBoard);
-
+rightwardProbabilityInput.addEventListener('input', redrawBoard);
 let clearBoard = drawBoard(); // Draw the board initially (and store the cleanup function)
 /**
  * Redraws the board (by calling the cleanup function and then drawing the board again)
@@ -276,3 +324,4 @@ function redrawBoard() {
     clearBoard(); // Clean up the old board
     clearBoard = drawBoard(); // Draw the new board (and store the cleanup function)
 }
+
