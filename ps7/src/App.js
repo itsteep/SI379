@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './App.css'; 
 
 function MyTodoList() {
+  
   const [todos, setTodos] = useState(
     JSON.parse(localStorage.getItem('todos')) || []
   );
@@ -12,11 +14,13 @@ function MyTodoList() {
   );
   const [isActive, setIsActive] = useState(false);
   const [timeLeft, setTimeLeft] = useState(workDuration);
-  const [sessionType, setSessionType] = useState('work'); // or 'break'
+  const [sessionType, setSessionType] = useState('work'); 
   const [activeTodoId, setActiveTodoId] = useState(null);
-  
+
   const inputRef = useRef();
   const intervalRef = useRef();
+
+  const sessionEndSound = new Audio('/sessionEndTone.mp3'); 
 
   const handleStartTimer = (todoId) => {
     setActiveTodoId(todoId);
@@ -41,6 +45,10 @@ function MyTodoList() {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prevTimeLeft) => {
           if (prevTimeLeft === 0) {
+            sessionEndSound.play().catch((error) => {
+              console.error('Failed to play the audio file.', error);
+            });
+
             const nextSessionType = sessionType === 'work' ? 'break' : 'work';
             const nextDuration = nextSessionType === 'work' ? workDuration : breakDuration;
 
@@ -63,8 +71,8 @@ function MyTodoList() {
       }, 1000);
     }
 
-    return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
-  }, [isActive, sessionType, activeTodoId, workDuration, breakDuration]);
+    return () => clearInterval(intervalRef.current);
+  }, [isActive, sessionType, activeTodoId, workDuration, breakDuration, sessionEndSound]);
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
