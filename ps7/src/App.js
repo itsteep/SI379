@@ -1,3 +1,4 @@
+// utilized ChatGPT for this assignment 
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css'; 
 
