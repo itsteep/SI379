@@ -37,15 +37,15 @@ function searchYouTubeAPI(searchQuery, mood) {
     });
 }
   
-function displayYouTubeVideo(videoId, mood) {
-    moodResultElement.textContent = `Mood: ${mood}`;
-    moodDescriptionTextElement.textContent = moodDescriptionsText[mood];
-    moodDescriptionTextElement.classList.remove('hidden');
-    moodImageElement.src = ""; 
-    moodImageElement.classList.remove('hidden');
-    youtubePlaylistElement.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-    resultsSection.style.display = 'block';
-}
+// function displayYouTubeVideo(videoId, mood) {
+//     moodResultElement.textContent = `Mood: ${mood}`;
+//     moodDescriptionTextElement.textContent = moodDescriptionsText[mood];
+//     moodDescriptionTextElement.classList.remove('hidden');
+//     moodImageElement.src = ""; 
+//     moodImageElement.classList.remove('hidden');
+//     youtubePlaylistElement.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+//     resultsSection.style.display = 'block';
+// }
 
 var questionState = 0;
 
