@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smiski Mood Playlist</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smiski Mood Playlist</h1>
+        </header>
+       
+        <!-- Home Page -->
+        <section id="quiz-intro" class="quiz-intro">
+            <p>Welcome to the Smiski Mood Playlist Quiz! Answer a few questions to find the perfect Spotify playlist for your current mood.</p>
+            <img src="smiski/cheer.png" alt="Smiski Image" id="quiz-image" class="quiz-image">
+            <button id="start-button" class="quiz-button">Start Quiz</button>
+        </section>
+        
+        <!-- Quiz -->
+        <section id="quiz" class="quiz hidden">
+            <div id="questions" class="question-section"></div>
+            <ul id="answers" class="answer-list"></ul>
+            <button id="next-button" class="quiz-button">Next</button>
+        </section>
+
+        <!-- Results -->
+        <section id="results" class="results-section hidden">
+            <h2 id="mood-result" class="mood-result"></h2> 
+            <p id="mood-description-text" class="description-text hidden"></p> 
+            <img id="mood-image" src="" alt="Mood Image" class="mood-image hidden"> 
+            <div id="playlist-description" class="playlist-description"></div>
+            <div id="youtube-playlist" class="youtube-playlist"></div>
+            <button id="retake-quiz-button" class="quiz-button hidden">Take the quiz again</button> 
+        </section>
+    </div>
+
+    <script src="quiz.js"></script>
+</body>
+</html>
